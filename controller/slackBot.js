@@ -14,7 +14,7 @@ rtm.on("message", async (event) => {
     try {    
         let channel =  event.channel;
         let text = event.text;
-        if(event.username!=="test_1"){
+        if(text && event.username!=="test_1"){
             const cleanedUrl = event.text.replace(/[<>]/g, '');
             if(isUrlValid(cleanedUrl)){
             let shorturl=await convertToShort(cleanedUrl)

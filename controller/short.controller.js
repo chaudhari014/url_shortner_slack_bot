@@ -13,7 +13,7 @@ const convertToShort = async (originalUrl) => {
       // store inside DB
       const urlData = new urlModel({ originalUrl, shortUrl });
       const saveData = await urlData.save();
-      console.log(saveData,"enter url")
+      //console.log(saveData,"enter url")
       // console.log(saveData)
       return `${API}/${saveData.shortUrl}`;
    } catch (error) {
@@ -26,10 +26,10 @@ const convertToShort = async (originalUrl) => {
 const convertToOrignal=async (req,res)=>{
     const {shortUrl}= req.params
  try {
-    console.log(shortUrl,"shortUrl")
+    //console.log(shortUrl,"shortUrl")
     const result=await urlModel.findOne({shortUrl})
     // console.log(result)
-    console.log(result,"result")
+    //console.log(result,"result")
     if(result){
          res.redirect(result.originalUrl);
     }else{
