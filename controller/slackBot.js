@@ -1,5 +1,7 @@
 const { RTMClient} = require("@slack/rtm-api");
-const {WebClient}=require("@slack/web-api")
+const {WebClient}=require("@slack/web-api");
+const { convertToShort } = require("./short.controller");
+const { isUrlValid } = require("./validurl");
 
 const dotenv = require("dotenv").config();
 
@@ -13,7 +15,12 @@ rtm.on("message", async (event) => {
         let channel =  event.channel;
         let text = event.text;
         if(event.username!=="test_1"){
-            sendMessages(channel, "hi i am here");
+            const cleanedUrl = event.text.replace(/[<>]/g, '');
+            if(isUrlValid(cleanedUrl)){
+            let shorturl=await convertToShort(cleanedUrl)
+            sendMessages(channel, shorturl);
+            }
+           
         }
         
     } catch (error) {
