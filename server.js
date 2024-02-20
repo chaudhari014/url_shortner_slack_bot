@@ -1,30 +1,39 @@
-const { RTMClient,LogLevel } = require("@slack/rtm-api");
-const {WebClient}=require("@slack/web-api")
-const dotenv = require("dotenv");
-dotenv.config();
+const slackbot=require("./controller/slackBot")
+const express=require("express")
+const { connection } = require("./config/db")
+const { short_URL } = require("./routes/shorturl.route")
+require("dotenv").config()
 
-const rtm = new RTMClient(process.env.SLACK_OATH_TOKEN);
-const web = new WebClient(process.env.SLACK_OATH_TOKEN)
+const app=express()
+app.use(express.json())
 
+// home route
+app.get("/",(req,res)=>{
+  return  res.status(200).json({msg:"Welcome to Url Shortener"})
+})
 
-rtm.start().catch(console.error)
+app.use("/",short_URL)
 
-rtm.on("message", async (event) => {
-    try {    
-        let channel =  event.channel;
-        console.log(channel, "channel");
-        let text = event.text;
-        console.log("Bot started", channel);
-        sendMessages(channel, "hi i am here");
-    } catch (error) {
-        console.error("Error processing message event:", error);
-    }
-});
+// route not found
+app.use((req,res)=>{
+   return res.status(404).json({msg:"end point not found"})
+})
 
- async function sendMessages(channel, message) {
-    console.log(web); // Log the web object to check if it's defined
-    await web.chat.postMessage({
-        channel: channel,
-        text: message,
-    });
-}
+// catch internal server error
+app.use((err,req,res)=>{
+    console.log(err.message,"server error")
+   return res.status(500).json({msg:"server error" })
+})
+
+port=process.env.PORT || 8060
+
+// server start
+app.listen(port,async()=>{
+ try {
+    await connection
+    console.log("db connected")
+ } catch (error) {
+    console.log(error)
+ }
+ console.log("server running")
+})

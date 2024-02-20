@@ -1,8 +1,0 @@
-const validUrl=require("valid-url")
-
-function check_url(url){
-    return validUrl.isUri(url)
-}
-console.log(check_url("https://www.npmjs.com/package/valid-url"))
-
-// module.exports={check_url}
